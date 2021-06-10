@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="cacheEnabled" value="true"/>
+	</settings>
+	<plugins>
+        <plugin interceptor="com.github.pagehelper.PageHelper">
+            <property name="helperDialect" value="mysql"/>
+            <property name="offsetAsPageNum" value="false"/>
+            <property name="rowBoundsWithCount" value="false"/>
+            <property name="pageSizeZero" value="true"/>
+            <property name="reasonable" value="false"/>
+            <property name="supportMethodsArguments" value="false"/>
+            <property name="PageRowBounds" value="true"/>
+            <property name="returnPageInfo" value="none"/>
+        </plugin>
+    </plugins>
+    <mappers>
+    	<mapper resource="mybatis/mapper/SignInMapper.xml" />
+    	<mapper resource="mybatis/mapper/TeacherMapper.xml" />
+    	<mapper resource="mybatis/mapper/TeacherRecordMapper.xml" />
+    	<mapper resource="mybatis/mapper/EnergyBeanMapper.xml" />
+    	<mapper resource="mybatis/mapper/AnswerMapper.xml" />
+    	<mapper resource="mybatis/mapper/AnswerChargeMapper.xml" />
+    	<mapper resource="mybatis/mapper/CityMapper.xml" />
+    	<mapper resource="mybatis/mapper/CommentMapper.xml" />
+    	<mapper resource="mybatis/mapper/IdGeneratorRecorderMapper.xml" />
+    	<mapper resource="mybatis/mapper/QuestionMapper.xml" />
+    	<mapper resource="mybatis/mapper/ReplyMapper.xml" />
+    	<mapper resource="mybatis/mapper/SubjectMapper.xml" />
+    	<mapper resource="mybatis/mapper/UserQuestionCollectionMapper.xml" />
+    	<mapper resource="mybatis/mapper/User2subjectMapper.xml" />
+    	<mapper resource="mybatis/mapper/User2visitedMapper.xml" />
+    	<mapper resource="mybatis/mapper/UserAnswerAgreeMapper.xml" />
+    	<mapper resource="mybatis/mapper/UserAttentionMapper.xml" />
+    	<mapper resource="mybatis/mapper/UserCashoutMapper.xml" />
+    	<mapper resource="mybatis/mapper/UserCommentAgreeMapper.xml" />
+    	<mapper resource="mybatis/mapper/UserConvertMapper.xml" />
+    	<mapper resource="mybatis/mapper/UserMapper.xml" />
+    	<mapper resource="mybatis/mapper/UserAfterMapper.xml" />
+    	<mapper resource="mybatis/mapper/UserNewsMapper.xml" />
+    	<mapper resource="mybatis/mapper/UserRechargeMapper.xml" />
+    	<mapper resource="mybatis/mapper/UserReplyAgreeMapper.xml" />
+    	<mapper resource="mybatis/mapper/UserTipoffsMapper.xml" />
+    	<mapper resource="mybatis/mapper/UserVoteMapper.xml" />
+    	<mapper resource="mybatis/mapper/QuestionLinkRecordMapper.xml" />
+    	<mapper resource="mybatis/mapper/UserBrowseMapper.xml" />
+    	<mapper resource="mybatis/mapper/AdvertRecordMapper.xml" />
+    	<mapper resource="mybatis/mapper/UserAnswerForwardMapper.xml" />
+    	<mapper resource="mybatis/mapper/UserLoginRecordMapper.xml" />
+    	<mapper resource="mybatis/mapper/UserQuestionForwardMapper.xml" />
+    </mappers>
+</configuration>

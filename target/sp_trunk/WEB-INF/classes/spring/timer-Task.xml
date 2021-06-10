@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 字段名（项） 必须 值范围 特殊字符 秒 是 0-59 , - * / 分 是 0-59 , - * / 时 是 0-23 , - * 
+	/ 月的某天 是 1-31 , - * ? / L W 月 是 1-12 or JAN-DEC , - * / 星期的某天 是 1-7 or SUN-SAT 
+	, - * ? / L # 年 否 empty, 1970-2099 , - * / refleshOfficerInNpcCity save refleshTradeTeam 
+	recordOnlinePlayerCount initTimerNotices -->
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+<bean id="timerTaskManager" class="com.ayue.sp.tools.task.TimerTaskManager"/>
+
+	<bean id="timeTaskQuertz" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="false" autowire="no" destroy-method="destroy">
+		<property name="triggers">
+			<list>
+				<ref bean="secondTrigger" /><!-- 秒级任务调用 -->
+				<!--<ref bean="minuteTrigger" />--><!-- 分级任务调用 -->
+				<ref bean="hourTrigger" /><!-- 小时级任务调用 -->
+				<ref bean="dayStartTrigger" /><!-- 每日开始整点任务调用 -->
+				<ref bean="dayFreeTrigger" /><!-- 每日空闲任务调用 -->
+				<ref bean="weekStartTrigger" /><!-- 每周开始整点任务调用 -->
+				<ref bean="weekFreeTrigger" /><!-- 每周空闲任务调用 -->
+			</list>
+		</property>
+		<property name="taskExecutor">
+			<ref bean="simpleThreadPoolTaskExecutor" />
+		</property>
+	</bean>
+
+	<bean id="simpleThreadPoolTaskExecutor"
+		class="org.springframework.scheduling.quartz.SimpleThreadPoolTaskExecutor">
+		<property name="makeThreadsDaemons" value="true" />
+		<property name="threadCount" value="4" />
+		<property name="threadNamePrefix" value="timerTaskExecutor" />
+		<property name="waitForJobsToCompleteOnShutdown" value="false" />
+	</bean>
+
+	<bean id="secondTrigger"
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="secondTask" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>${background.secondExecute}</value>  
+        </property>  
+    </bean>  
+
+	 <bean id="secondTask"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="timerTaskManager" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>secondExecute</value>  
+        </property>  
+    </bean>
+
+	<!--<bean id="minuteTrigger"
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="minuteTask" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>${background.minuteExecute}</value>  
+        </property>  
+    </bean>  
+
+	 <bean id="minuteTask"
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="timerTaskManager" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>minuteExecute</value>  
+        </property>  
+    </bean>-->
+	
+	<bean id="hourTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="hourTask" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>${background.hourExecute}</value>  
+        </property>  
+    </bean>  
+
+	 <bean id="hourTask"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="timerTaskManager" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>hourExecute</value>  
+        </property>  
+    </bean>
+
+	<bean id="dayStartTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="dayStartTask" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>${background.dayStartExecute}</value>  
+        </property>  
+    </bean>  
+
+	 <bean id="dayStartTask"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="timerTaskManager" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>dayStartExecute</value>  
+        </property>  
+    </bean>
+	
+	<bean id="dayFreeTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="dayFreeTask" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>${background.dayFreeExecute}</value>  
+        </property>  
+    </bean>  
+
+	 <bean id="dayFreeTask"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="timerTaskManager" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>dayFreeExecute</value>  
+        </property>  
+    </bean>
+
+	<bean id="weekStartTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="weekStartTask" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>${background.weekStartExecute}</value>  
+        </property>  
+    </bean>  
+
+	 <bean id="weekStartTask"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="timerTaskManager" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>weekStartExecute</value>  
+        </property>  
+    </bean>
+    
+    <bean id="weekFreeTrigger"  
+        class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail">  
+            <ref bean="weekFreeTask" />  
+        </property>  
+        <property name="cronExpression">  
+            <value>${background.weekFreeExecute}</value>  
+        </property>  
+    </bean>  
+
+	 <bean id="weekFreeTask"  
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="timerTaskManager" />  
+        </property>  
+        <property name="targetMethod">  
+            <value>weekFreeExecute</value>  
+        </property>  
+    </bean>
+</beans>
+

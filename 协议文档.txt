@@ -1,0 +1,24 @@
+
+url:../qa/getDynamicQA  //问答--获取最新动态
+参数：lastAnswerId:20   //最后一个回答id,第一次请求为-1；
+结果：
+{
+    "dynamicQAInfoList": [  //问答动态内容列表
+        {
+            "answerCommentCount": 10,  //回答评论数
+            "answerCityAdress: "北京",  //回答创建时地址
+            "userId": 1,  //用户id
+            "userLevel": 2,  //用户等级
+            "isAnonymous": false,  //是否匿名
+            "questionTitle": "普通问题测试",  //问题标题
+            "answerAgreeCount": 10,  //回答的赞数
+            "answerId": 1,  //回答id
+            "userLabels": "1,2,3",  //用户标签
+            "answerPictures": "aaa,bbb",  //回答图片url
+            "answerCreateTime": 1598627887000,  //回答创建时间
+            "answerContent": "回答测试",  //回答内容
+            "userAvatar": "aaa",  //用户头像
+            "userName": "测试用户名"  //用户名
+        }
+    ]
+}

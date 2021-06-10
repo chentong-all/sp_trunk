@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd"> -->
+    
+<beans xmlns="http://www.springframework.org/schema/beans"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"  
+    xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"  
+    xsi:schemaLocation="  
+        http://www.springframework.org/schema/beans  
+        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd  
+        http://www.springframework.org/schema/context  
+        http://www.springframework.org/schema/context/spring-context-4.0.xsd  
+        http://www.springframework.org/schema/tx  
+        http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">   
+    
+    
+	<bean id="propertyBean"  
+	    class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
+	    <property name="locations">  
+	        <array>  
+	            <value>classpath:config/redis.properties</value>
+	            <value>classpath:config/jdbc.properties</value>
+	            <value>classpath:config/timerTask.properties</value>
+	        </array>  
+	    </property>  
+	</bean>
+    
+    <!-- 工具库数据源 -->
+   	<bean name="DataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+   		<property name="driverClassName" value="${jdbc.driverClass}" />
+   		<property name="url" value="${jdbc.url}" />
+        <property name="username" value="${jdbc.user}" />
+        <property name="password" value="${jdbc.password}"/>
+        <property name="initialSize" value="${jdbc.initialPoolSize}" />
+        <property name="maxActive" value="${jdbc.maxPoolSize}" />
+        <property name="minIdle" value="0" />
+        <property name="maxWait" value="3000" />
+        <property name="validationQuery" value="${jdbc.preferredTestQuery}" />
+        <property name="testOnBorrow" value="false" />
+        <property name="testOnReturn" value="false" />
+        <property name="testWhileIdle" value="true" />
+        <property name="timeBetweenEvictionRunsMillis" value="60000" />
+        <property name="minEvictableIdleTimeMillis" value="25200000" />
+        <property name="removeAbandoned" value="true" />
+        <property name="removeAbandonedTimeout" value="1800" />
+        <property name="logAbandoned" value="true" />
+        <property name="filters" value="stat" />
+ 	</bean>
+   
+   	<bean id="SqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">      
+   		<property name="dataSource" ref="DataSource" />  
+   		<property name="configLocation" value="classpath:mybatis/Configeration.xml"/>
+	</bean>
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+	 	<property name="annotationClass" value="org.springframework.stereotype.Repository"/>  
+	 	<!-- 使用name值注入的方式，避免出现MapperScannerConfigurer和PropertyPlaceholderConfigurer冲突的问题 -->
+    	<property name="sqlSessionFactoryBeanName" value="SqlSessionFactory"/>
+    	<property name="basePackage" value="com.ayue.sp.db.dao"/>
+	</bean>
+	   <!-- 事务管理 --> 
+    <bean id="TxManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  
+        <property name="dataSource" ref="DataSource"></property>  
+    </bean>
+    <tx:annotation-driven transaction-manager="TxManager"/>
+
+ <!-- redis -->
+    <bean id="redisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxIdle" value="${redis.maxIdle}" />
+		<property name="maxTotal" value="${redis.maxActive}" />
+		<property name="maxWaitMillis" value="${redis.maxWait}" />
+		<property name="testOnBorrow" value="${redis.testOnBorrow}" />
+	</bean>
+	
+	
+	
+	<bean id="redisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+        <property name="hostName" value="${redis.host}" />
+        <property name="port" value="${redis.port}" />
+		<property name="password" value="${redis.pass}" />
+		<property name="poolConfig" ref="redisPoolConfig"/>
+		<property name="database" value="${redis.dbindex}"/>
+	</bean>
+	
+	<bean id="stringRedisSerializer" class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+	
+	<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
+		<property name="connectionFactory" 	ref="redisConnectionFactory" />
+		<property name="keySerializer" ref="stringRedisSerializer" />
+    	<property name="valueSerializer" ref="stringRedisSerializer" />
+    	<property name="hashKeySerializer" ref="stringRedisSerializer" />
+    	<property name="hashValueSerializer" ref="stringRedisSerializer" />
+	</bean>
+	
+    <!-- 扫描redisCache包下所有使用注解的类型 -->
+    <context:component-scan base-package="com.ayue.sp.core.redisCache.dao" />
+  
+</beans>
